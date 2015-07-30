@@ -7,12 +7,22 @@ website: https://dylanhansch.net
 softdepend: [Vault]
 commands:
     balance:
-        description: The main FitCraft command
-        usage: /<command>
+        description: Check a player's balance
+        usage: /<command> (player)
         aliases: [bal, money]
+    pay:
+        description: Pay another player
+        usage: /<command> <player> <value>
+    economy:
+        description: Economy management
+        usage: /<command> <player> <add/remove/set/reset> <value>
+        aliases: [eco]
 permissions:
     crosseconomy.*:
         description: CrossEconomy Admin
         default: op
         children:
             crosseconomy.balance: true
+            crosseconomy.balance.others: true
+            crosseconomy.pay: true
+            crosseconomy.eco: true
