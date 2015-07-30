@@ -1,0 +1,18 @@
+main: ${main.class}
+name: ${project.name}
+version: ${project.version}
+description: Cross server economy for Minecraft
+author: Dylan Hansch
+website: https://dylanhansch.net
+softdepend: [Vault]
+commands:
+    balance:
+        description: The main FitCraft command
+        usage: /<command>
+        aliases: [bal, money]
+permissions:
+    crosseconomy.*:
+        description: CrossEconomy Admin
+        default: op
+        children:
+            crosseconomy.balance: true
