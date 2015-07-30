@@ -14,12 +14,17 @@ import net.dylanhansch.crosseconomy.command.PayCommand;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CrossEconomy extends JavaPlugin implements Listener {
 	
+	// Initial balance
+	public static final double INITIAL_BALANCE = 100.;
+	// Reference to Vault
 	private Economy econ = null;
 	
 	@Override
@@ -71,7 +76,7 @@ public class CrossEconomy extends JavaPlugin implements Listener {
 		try (Connection db = this.getSQLDatabase();
 			Statement stmt = db.createStatement()) {
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY AUTO_INCREMENT," +
-					"uuid VARCHAR(255) UNIQUE, balance VARCHAR(255))");
+					"uuid VARCHAR(255) UNIQUE, balance DECIMAL(10,2))");
 		}
 	}
 	
@@ -133,11 +138,36 @@ public class CrossEconomy extends JavaPlugin implements Listener {
 	}
 	
 	public void resetBalance(Player player) throws SQLException {
-		try(Connection conn = getSQLDatabase()){
-			try(PreparedStatement stmt = conn.prepareStatement("DELETE FROM players WHERE uuid = ?")){
-				stmt.setString(1, player.getUniqueId().toString());
+		try (Connection conn = this.getSQLDatabase();
+				 PreparedStatement stmt = conn.prepareStatement("UPDATE players SET balance = ? WHERE uuid = ?")
+			){
+				stmt.setDouble(1, INITIAL_BALANCE);
+				stmt.setString(2, player.getUniqueId().toString());
 				stmt.executeUpdate();
 			}
+	}
+	
+	@EventHandler
+	public boolean onPlayerJoinEvent(PlayerJoinEvent event) throws SQLException{
+		Player player = event.getPlayer();
+		try (Connection db = this.getSQLDatabase()) {
+			boolean recordExists = false;
+			try (PreparedStatement stmt = db.prepareStatement("SELECT id FROM players WHERE uuid = ?")) {
+				stmt.setString(1, player.getUniqueId().toString());
+				try (ResultSet rs = stmt.executeQuery()) {
+					if (rs.next()) {
+						recordExists = true;
+					}
+				}
+			}
+			if (!recordExists) {
+				try (PreparedStatement stmt = db.prepareStatement("INSERT INTO players (uuid, balance) VALUES (?, ?)")) {
+					stmt.setString(1, player.getUniqueId().toString());
+					stmt.setDouble(2, INITIAL_BALANCE);
+					stmt.executeUpdate();
+				}
+			}
 		}
+		return true;
 	}
 }
