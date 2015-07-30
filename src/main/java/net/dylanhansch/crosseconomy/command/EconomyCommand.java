@@ -32,23 +32,23 @@ public class EconomyCommand implements CommandExecutor {
 		
 		@SuppressWarnings("deprecation")
 		Player targetPlayer = plugin.getServer().getPlayer(args[1]);
-		int delta = Integer.parseInt(args[2]);
+		double delta = Double.parseDouble(args[2]);
 		if(args.length == 3){
 			if(!sender.hasPermission("crosseconomy.eco")){
 				sender.sendMessage(ChatColor.DARK_RED + "You don't have permission for that command.");
 				return true;
 			}else{
-				if(args[1] == "add"){
+				if(args[1].equalsIgnoreCase("add")){
 					try {
 						plugin.addBalance(targetPlayer, delta);
-						sender.sendMessage(ChatColor.GREEN + "You added $" + ChatColor.RED + delta + ChatColor.GREEN 
-								+ " to " + ChatColor.RED + targetPlayer + ChatColor.GREEN + "'s account.");
+						//sender.sendMessage(ChatColor.GREEN + "You added $" + ChatColor.RED + delta + ChatColor.GREEN 
+						//		+ " to " + ChatColor.RED + targetPlayer + ChatColor.GREEN + "'s account.");
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return true;
-				}else if(args[1] == "remove"){
+				}else if(args[1].equalsIgnoreCase("remove")){
 					try {
 						plugin.removeBalance(targetPlayer, delta);
 						sender.sendMessage(ChatColor.GREEN + "You removed $" + ChatColor.RED + delta + ChatColor.GREEN 
@@ -58,7 +58,7 @@ public class EconomyCommand implements CommandExecutor {
 						e.printStackTrace();
 					}
 					return true;
-				}else if(args[1] == "set"){
+				}else if(args[1].equalsIgnoreCase("set")){
 					try {
 						plugin.setBalance(targetPlayer, delta);
 						sender.sendMessage(ChatColor.GREEN + "You set " + ChatColor.RED + targetPlayer + ChatColor.GREEN 
@@ -68,7 +68,7 @@ public class EconomyCommand implements CommandExecutor {
 						e.printStackTrace();
 					}
 					return true;
-				}else if(args[1] == "reset"){
+				}else if(args[1].equalsIgnoreCase("reset")){
 					try {
 						plugin.resetBalance(targetPlayer);
 						sender.sendMessage(ChatColor.GREEN + "You reset " + ChatColor.RED + targetPlayer + ChatColor.GREEN + "'s balance to ZERO.");

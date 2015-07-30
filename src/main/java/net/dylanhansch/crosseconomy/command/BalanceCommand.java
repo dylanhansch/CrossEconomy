@@ -20,18 +20,8 @@ public class BalanceCommand implements CommandExecutor {
 	// Usage: /balance (player)
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLable, String[] args){
 		
-		if(args.length == 0){
-			if(!sender.hasPermission("crosseconomy.balance")){
-				sender.sendMessage(ChatColor.DARK_RED + "You don't have permission for that command.");
-				return true;
-			}else{
-				sender.sendMessage(ChatColor.RED + "Error: Not enough arguments.");
-				return false;
-			}
-		}
-		
 		Player player = (Player) sender;
-		if(args.length == 1){
+		if(args.length == 0){
 			if(!sender.hasPermission("crosseconomy.balance")){
 				sender.sendMessage(ChatColor.DARK_RED + "You don't have permission for that command.");
 				return true;
@@ -47,8 +37,8 @@ public class BalanceCommand implements CommandExecutor {
 		}
 		
 		@SuppressWarnings("deprecation")
-		Player targetPlayer = plugin.getServer().getPlayer(args[1]);
-		if(args.length == 2){
+		Player targetPlayer = plugin.getServer().getPlayer(args[0]);
+		if(args.length == 1){
 			if(!sender.hasPermission("crosseconomy.balance.others")){
 				sender.sendMessage(ChatColor.DARK_RED + "You don't have permission for that command.");
 				return true;
@@ -63,7 +53,7 @@ public class BalanceCommand implements CommandExecutor {
 			}
 		}
 		
-		if(args.length >= 3){
+		if(args.length >= 2){
 			if(!sender.hasPermission("crosseconomy.balance")){
 				sender.sendMessage(ChatColor.DARK_RED + "You don't have permission for that command.");
 				return true;
